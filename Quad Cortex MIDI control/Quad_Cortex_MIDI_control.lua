@@ -1,8 +1,10 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.3-dev
+-- @version 2.3
 -- @changelog
---   - Add info after first config on how to add a toolbar button for easy access, or re-execute the setup wizard if needed.
+--   - Add info after setup on how to add a toolbar button for easy access, or re-execute the setup wizard if needed.
+--   - Add MIDI output ID validation in the setup wizard to prevent invalid entries.
+--   - README update with clearer setup instructions and troubleshooting tips.
 -- @about
 --   # Quad Cortex MIDI control
 --   Real-time MIDI control for Neural DSP Quad Cortex via Reaper Regions.
@@ -54,7 +56,12 @@ if not lib.LoadSettings() then
     lib.LoadSettings()
 end
 
-lib.EnsureControlTrack()
+if not lib.EnsureControlTrack() then
+    lib.SetToolbarButtonState(0)
+    return 
+end
+
+lib.Log("Hardware Check: OK", 1)
 
 local lastPlayState, lastPc, lastCc = -1, -1, -1
 
