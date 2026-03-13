@@ -1,6 +1,6 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.0-dev
+-- @version 2.1-dev
 -- @changelog
 --   - Split from original Quad Cortex MIDI control script to create a more modular and maintainable codebase.
 --   - Added a setup wizard for first-time configuration.
@@ -39,7 +39,7 @@
 --      - Log Level 1 [INFO]: Preset/Scene changes and Transport status.
 --      - Log Level 2 [DEBUG]: Full configuration details and file operations.
 -- @provides
---   Quad_Cortex_MIDI_control.lua
+--   Quad_Cortex_MIDI_control_setup.lua
 --   lib.lua
 -- @link GitHub Repository https://github.com/6wheels/reaper-quad-cortex-midi-control
 

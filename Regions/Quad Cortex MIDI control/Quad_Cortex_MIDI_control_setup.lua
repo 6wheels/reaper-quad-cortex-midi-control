@@ -1,6 +1,5 @@
 -- @description Setup Wizard for Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.0-dev
 -- @noindex
 
 local base_path = debug.getinfo(1).source:match("@?(.*[\\/])")

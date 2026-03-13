@@ -1,6 +1,5 @@
 -- @description Core library for Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.0-dev
 -- @noindex
 
 local lib = {}
