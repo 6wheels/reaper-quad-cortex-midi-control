@@ -1,8 +1,8 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.2
+-- @version 2.3-dev
 -- @changelog
---   - Add setup to list action list (for easier access and reconfiguration)
+--   - Add main action to custom toolbar
 -- @about
 --   # Quad Cortex MIDI control
 --   Real-time MIDI control for Neural DSP Quad Cortex via Reaper Regions.
