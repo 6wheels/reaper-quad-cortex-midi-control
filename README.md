@@ -2,16 +2,22 @@
 
 Automate your **Neural DSP Quad Cortex** directly from the Reaper timeline.
 
-## Features
-- **Region-Based Control**: Trigger Presets and Scenes by simply naming your Regions.
-- **Automatic Track Setup**: Automatically creates and configures a dedicated MIDI routing track.
-- **Smart Transport Automation**: 
-    - Automatically activates the **Tuner** on Stop (optional).
-    - Automatically switches to **Gig View** on Play (optional).
-- **Setup Wizard**: Easy configuration of MIDI channels, hardware IDs, and naming prefixes.
-- **MIDI Clock Support**: Reaper will send tempo/clock to the Quad Cortex 
-    if "Send clock" is enabled for your MIDI output in Reaper's Preferences.
-- **Modular Design**: Lightweight engine with a separate configuration interface.
+---
+
+## ✨ Key Features
+
+* **Zero-Touch Setup**: Automatically creates and configures a dedicated MIDI track (Armed, Monitoring ON, Record Disabled).
+* **Automatic Hardware Routing**: Assigns your MIDI interface ID directly to the track routing.
+* **Intelligent Regions**: 
+    * **Presets**: Switch banks and presets using `#BankLetter` (e.g., `#1A`).
+    * **Scenes**: Switch scenes (A to H) using `!SA` to `!SH`.
+    * **Inheritance**: Place Scene regions inside larger Preset regions for precise control.
+* **Live/Studio Automation**:
+    * **Play**: Forces **Gig View** ON and turns **Tuner** OFF.
+    * **Stop/Pause**: Automatically activates the **Tuner** for silent breaks.
+* **Smart Error Handling**: Detects if your MIDI hardware is unplugged and guides you through the fix.
+
+---
 
 ## ⚠️ Choosing your version
 
@@ -42,23 +48,62 @@ To test the latest features before they hit the stable release:
 2. Place it in your Reaper `Scripts` directory.
 3. Load `Quad_Cortex_MIDI_Control.lua` in the Actions List.
 
-## Usage
+## 🛠 Configuration (Setup Wizard)
 
-### 1. Configuration
-On the first run, a **Setup Wizard** will appear. 
-- **MIDI Channel**: The MIDI channel your Quad Cortex is listening to (default: 1).
-- **Hardware MIDI Out ID**: The ID of your MIDI interface connected to the QC.
-- **Prefixes**: Characters used to identify commands in Region names.
+On the first run, a **Setup Wizard** will appear. You can relaunch it at any time by running the `Quad_Cortex_MIDI_control_setup` script from your Action List.
 
-### 2. Controlling the Quad Cortex
-Create Regions in your project and name them using the following syntax (default prefixes):
+* **MIDI Channel**: The MIDI channel your Quad Cortex is listening to (default: `1`).
+* **Hardware MIDI Out ID**: The ID of your MIDI interface. A list of all available devices and their IDs is automatically displayed in the **Reaper Console** when the wizard opens.
+* **Dedicated Track Name**: The name of the track the script will create and manage (default: `Quad Cortex MIDI Control`).
+* **Preset Prefix**: The character used to identify Preset changes in Region names (default: `#`). 
+    * *Example: `#1A`, `#12C`*
+* **Scene Prefix**: The characters used to identify Scene changes in Region names (default: `!S`). 
+    * *Example: `!SA` to `!SH` (matches footswitches A-H).*
+* **Tuner on Stop? (y/n)**: If enabled, the QC Tuner activates when you stop playback.
+* **GigView on Play? (y/n)**: If enabled, the QC forces Gig View ON when you hit play.
+* **Log Level (0-2)**: 
+    * `0`: Silent.
+    * `1`: **[INFO]** Shows changes and transport status (Recommended).
+    * `2`: **[DEBUG]** Shows full configuration and file operations.
 
-| Target | Syntax Example | Notes |
-| :--- | :--- | :--- |
-| **Preset** | `#1A` | Bank number + Slot letter (A to H) |
-| **Scene** | `!S1` or `!SA` | Scene number (1-8) or letter (A-H) |
+---
+
+## 🚀 Usage Instructions
+
+### 1. Naming your Regions
+Create regions in the timeline and name them using your prefixes:
+* **To change a Preset**: Name a region `#1A` (Bank 1, Preset A).
+* **To change a Scene**: Name a region `!SA` (Scene A).
+* **Combined**: Place a small `!SB` region inside a larger `#4D` region to switch to Scene B while staying in Preset 4D.
+
+### 2. Tempo Sync (BPM)
+To sync your QC's delays and time-based effects to Reaper's tempo:
+1. Go to `Preferences > MIDI Devices`.
+2. Double-click your **MIDI Output**.
+3. Check **"Send clock to this device"**.
+4. The script's dedicated track will automatically relay this clock to your hardware.
 
 *Note: If regions overlap, the shortest Region takes priority for Scene changes (ideal for nested scenes within a preset).*
+
+---
+
+## 🔍 Troubleshooting
+
+* **Hardware Error**: If your MIDI interface is unplugged, the script will stop and show an error message. Check the Console to see currently available IDs and update your setup.
+* **MIDI Device missing from Console list**: If your device does not appear in the console during setup:
+    1. Ensure the device is properly connected and recognized by your Operating System *before* launching REAPER.
+    2. Check `Preferences > MIDI Devices` and ensure the output is not "Disabled".
+* **Slow Scene/Preset Changes (USB MIDI)**: If you are using the Quad Cortex via USB MIDI and switching feels sluggish:
+    1. Go to `Preferences > MIDI Devices`.
+    2. Right-click your QC Output and select **Configure output...**.
+    3. Check the box **"Open device in low latency/low precision mode"**. This often resolves timing issues with the QC's internal MIDI buffer.
+* **Tempo / BPM Sync Issues**: 
+    1. In REAPER: Ensure **"Send clock to this device"** is checked in your MIDI Output settings.
+    2. On the Quad Cortex: Go to `Settings > MIDI` and ensure **MIDI Clock** is set to **ON** or **Receive**.
+    3. Ensure the dedicated control track is not muted.
+* **Erratic Behavior (Multiple Tracks)**: The script identifies the control track by its name. If your project contains multiple tracks with the same name, the script may target the wrong one. **Always ensure only one dedicated control track exists.**
+* **No MIDI reaching the QC**: Ensure the dedicated track is Armed and Monitoring is set to ON.
+* **Logging**: Set `Log Level` to `2` to see exactly what MIDI messages are being sent and which track is being used in real-time.
 
 ## License
 This project is licensed under the **GNU General Public License v3.0**. 

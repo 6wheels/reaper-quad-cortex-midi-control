@@ -105,9 +105,42 @@ function lib.SendMidi(status, d1, d2)
     lib.Log(string.format("MIDI Sent (channel %d) -> Status: 0x%X, D1: %d, D2: %d", channel, status, d1, d2), 2)
 end
 
+function lib.GetMidiOutputsList()
+    local dev_list = "\n--- CURRENTLY AVAILABLE MIDI DEVICES ---\n"
+    local num_outputs = reaper.GetNumMIDIOutputs()
+    if num_outputs == 0 then return dev_list .. "(No MIDI outputs detected)\n" end
+    
+    for i = 0, num_outputs - 1 do
+        local retval, name = reaper.GetMIDIOutputName(i, "")
+        if retval then
+            dev_list = dev_list .. string.format("ID %d : %s\n", i, name)
+        end
+    end
+    dev_list = dev_list .. "----------------------------------------\n"
+    return dev_list
+end
+
 function lib.EnsureControlTrack()
     local trackName = lib.Config.TRACK_NAME or lib.Defaults.TRACK_NAME
-    local hwId = tonumber(lib.Config.MIDI_OUTPUT_ID) or 0
+    local hwDeviceId = tonumber(lib.Config.MIDI_OUTPUT_ID) or -1
+    
+    if hwDeviceId >= 0 then
+        local retval, name = reaper.GetMIDIOutputName(hwDeviceId, "")
+        if not retval then
+            reaper.ClearConsole()
+            reaper.ShowConsoleMsg("ERROR: MIDI Device ID " .. hwDeviceId .. " is missing!\n")
+            reaper.ShowConsoleMsg(lib.GetMidiOutputsList())
+            
+            local errorMsg = "The assigned MIDI Device (ID " .. hwDeviceId .. ") is not connected.\n\n" ..
+                             "1. Check the Reaper Console for available IDs.\n" ..
+                             "2. Run 'Quad_Cortex_MIDI_control_setup' to update your settings.\n\n" ..
+                             "The script will now stop to prevent routing errors."
+            
+            reaper.MB(errorMsg, "QC MIDI Control - Hardware Error", 0)
+            return false
+        end
+    end
+
     local targetTrack = nil
     for i = 0, reaper.CountTracks(0) - 1 do
         local track = reaper.GetTrack(0, i)
@@ -117,14 +150,19 @@ function lib.EnsureControlTrack()
     if not targetTrack then
         reaper.InsertTrackAtIndex(0, true)
         targetTrack = reaper.GetTrack(0, 0)
-        lib.Log("Created MIDI Output Track: " .. trackName, 1)
         reaper.GetSetMediaTrackInfo_String(targetTrack, "P_NAME", trackName, true)
+        lib.Log("Created MIDI Output Track: " .. trackName, 1)
     end
-    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECINPUT", 6080) -- 4096 (MIDI Flag) + (62 * 32) (VKB) + 0 (All Channels) = 6080
-    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECMODE", 2) -- 2 = Record disable (input monitoring only)
-    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECARM", 1) -- Arm the track to enable MIDI output routing
-    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECMON", 1) -- Monitor input to ensure MIDI messages are sent even when not recording
-    reaper.SetMediaTrackInfo_Value(targetTrack, "I_MIDIHWOUT", hwId) -- Set MIDI output to specified hardware ID
+    
+    local packedValue = (hwDeviceId >= 0) and ((hwDeviceId << 5) + 0) or -1
+    reaper.SetMediaTrackInfo_Value(targetTrack, "I_MIDIHWOUT", packedValue)
+    
+    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECINPUT", 6080)
+    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECARM", 1)
+    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECMON", 1)
+    reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECMODE", 2)
+
+    return true
 end
 
 function lib.CalculatePc(bank, letter)
