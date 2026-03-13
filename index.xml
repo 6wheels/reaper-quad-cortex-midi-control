@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Quad Cortex MIDI control" commit="d912255dc9ed976373419c04489ee07379831715">
+<index version="1" name="Quad Cortex MIDI control" commit="98c0a8ca12b7fbf02c720437c83e07c62b8ad09a">
   <category name="Quad Cortex MIDI control">
     <reapack name="Quad_Cortex_MIDI_control.lua" type="script" desc="Quad Cortex MIDI control">
       <metadata>
@@ -36,26 +36,11 @@
 ]]></description>
         <link rel="website" href="https://github.com/6wheels/reaper-quad-cortex-midi-control">GitHub Repository</link>
       </metadata>
-      <version name="1.0" author="Bertrand C" time="2026-02-23T12:00:00Z">
-        <changelog><![CDATA[Initial release with core features:
-- Preset and Scene automation via Reaper Regions.
-- Gig View auto-activation on Play and Tuner on Stop.
-- Basic logging for Preset/Scene changes and Transport status.]]></changelog>
-        <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/823af4a9a1dd031c531a9640c86d286f00765566/Quad%20Cortex%20MIDI%20control/Quad%20Cortex%20MIDI%20control.lua</source>
-      </version>
-      <version name="2.0-dev" author="Bertrand C" time="2026-03-13T15:23:08Z">
-        <changelog><![CDATA[- Split from original Quad Cortex MIDI control script to create a more modular and maintainable codebase.
-- Added a setup wizard for first-time configuration.
-- Improved logging and error handling.
-- Automatically creates the MIDI output track if it doesn't exist.]]></changelog>
-        <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/34b88eb835df7f5ef9da69bd302c11db070edc13/Regions/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
-        <source file="lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/34b88eb835df7f5ef9da69bd302c11db070edc13/Regions/Quad%20Cortex%20MIDI%20control/lib.lua</source>
-      </version>
-      <version name="2.1-dev" author="Bertrand C" time="2026-03-13T15:37:32Z">
-        <changelog><![CDATA[- Folders changes to fix category detection with reapack-index]]></changelog>
-        <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/d912255dc9ed976373419c04489ee07379831715/Regions/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
-        <source file="Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/d912255dc9ed976373419c04489ee07379831715/Regions/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control_setup.lua</source>
-        <source file="lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/d912255dc9ed976373419c04489ee07379831715/Regions/Quad%20Cortex%20MIDI%20control/lib.lua</source>
+      <version name="2.1-dev" author="Bertrand C" time="2026-03-13T20:50:44Z">
+        <changelog><![CDATA[- Fix folders to fix category detection with reapack-index]]></changelog>
+        <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/98c0a8ca12b7fbf02c720437c83e07c62b8ad09a/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+        <source file="Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/98c0a8ca12b7fbf02c720437c83e07c62b8ad09a/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control_setup.lua</source>
+        <source file="lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/98c0a8ca12b7fbf02c720437c83e07c62b8ad09a/Quad%20Cortex%20MIDI%20control/lib.lua</source>
       </version>
     </reapack>
   </category>

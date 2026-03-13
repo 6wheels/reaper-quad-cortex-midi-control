@@ -1,8 +1,8 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.1-dev
+-- @version 2.2-dev
 -- @changelog
---   - Fix folders to fix category detection with reapack-index
+--   - Add setup to list action list (for easier access and reconfiguration)
 -- @about
 --   This is the **DEVELOPMENT** version from GitHub. 
 --   It may contain experimental features or bugs.
@@ -36,7 +36,7 @@
 --      - Log Level 1 [INFO]: Preset/Scene changes and Transport status.
 --      - Log Level 2 [DEBUG]: Full configuration details and file operations.
 -- @provides
---   Quad_Cortex_MIDI_control_setup.lua
+--   [main] Quad_Cortex_MIDI_control_setup.lua
 --   lib.lua
 -- @link GitHub Repository https://github.com/6wheels/reaper-quad-cortex-midi-control
 
