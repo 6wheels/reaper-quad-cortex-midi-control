@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<index version="1" name="Quad Cortex MIDI control" commit="34b88eb835df7f5ef9da69bd302c11db070edc13">
+  <category name="Regions/Quad Cortex MIDI control">
+    <reapack name="Quad_Cortex_MIDI_control.lua" type="script" desc="Quad Cortex MIDI control">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 This is the {\b DEVELOPMENT} version from GitHub. It may contain experimental features or bugs. For the stable version, please use the official ReaPack/ReaTeam repositories.\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Quad Cortex MIDI control\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Real-time MIDI control for Neural DSP Quad Cortex via Reaper Regions.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Automates Presets using "#BankLetter" (e.g., #1A).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Automates Scenes using "!Sx" (e.g., !S1 or !SA).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab Auto-activates Gig View on Play and Tuner on Stop (both can be toggled).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b MIDI Clock Support}: Reaper will send tempo/clock to the Quad Cortex if "Send clock" is enabled for your MIDI output in Reaper's Preferences.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 USAGE INSTRUCTIONS\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab AUTOMATIC INSTALLATION & SETUP\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Run this script. If it's the first time, the SETUP WIZARD will open.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab The script AUTOMATICALLY creates a dedicated MIDI track (Default: "Quad Cortex MIDI control").\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab This track is pre-configured: Armed, Monitoring ON, and Record DISABLED (Mode 2).\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab In the Wizard, select the correct MIDI Hardware Output ID for your QC.\sa180\sa180\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab TEMPO & MIDI CLOCK SYNC\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab To sync Tempo (BPM) to your QC:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Preferences > MIDI Devices > Double-click Output > Check "Send clock to this device".\sa180\sa180\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab SYNC YOUR PRESETS AND SCENES\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab PRESETS: Use "#BankLetter" format (e.g., "#1A", "#12C").\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab SCENES: Use "!SA" to "!SH" (Matches QC Footswitches A to H).\sa180\sa180\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 4.\tx360\tab LOG LEVELS\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Log Level 1 [INFO]: Preset/Scene changes and Transport status.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Log Level 2 [DEBUG]: Full configuration details and file operations.\sa180\sa180\par}
+}
+]]></description>
+        <link rel="website" href="https://github.com/6wheels/reaper-quad-cortex-midi-control">GitHub Repository</link>
+      </metadata>
+      <version name="2.0-dev" author="Bertrand C" time="2026-03-13T15:23:08Z">
+        <changelog><![CDATA[- Split from original Quad Cortex MIDI control script to create a more modular and maintainable codebase.
+- Added a setup wizard for first-time configuration.
+- Improved logging and error handling.
+- Automatically creates the MIDI output track if it doesn't exist.]]></changelog>
+        <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/34b88eb835df7f5ef9da69bd302c11db070edc13/Regions/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+        <source file="lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/34b88eb835df7f5ef9da69bd302c11db070edc13/Regions/Quad%20Cortex%20MIDI%20control/lib.lua</source>
+      </version>
+    </reapack>
+  </category>
+</index>
