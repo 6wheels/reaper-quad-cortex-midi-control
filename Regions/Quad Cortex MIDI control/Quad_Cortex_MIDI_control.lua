@@ -2,10 +2,7 @@
 -- @author Bertrand C
 -- @version 2.1-dev
 -- @changelog
---   - Split from original Quad Cortex MIDI control script to create a more modular and maintainable codebase.
---   - Added a setup wizard for first-time configuration.
---   - Improved logging and error handling.
---   - Automatically creates the MIDI output track if it doesn't exist.
+--   - Fix folders to fix category detection with reapack-index
 -- @about
 --   This is the **DEVELOPMENT** version from GitHub. 
 --   It may contain experimental features or bugs.
