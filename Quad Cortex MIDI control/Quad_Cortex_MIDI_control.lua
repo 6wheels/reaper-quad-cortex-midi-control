@@ -1,13 +1,9 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.2-dev
+-- @version 2.2
 -- @changelog
 --   - Add setup to list action list (for easier access and reconfiguration)
 -- @about
---   This is the **DEVELOPMENT** version from GitHub. 
---   It may contain experimental features or bugs.
---   For the stable version, please use the official ReaPack/ReaTeam repositories.
---
 --   # Quad Cortex MIDI control
 --   Real-time MIDI control for Neural DSP Quad Cortex via Reaper Regions.
 --   - Automates Presets using "#BankLetter" (e.g., #1A).
