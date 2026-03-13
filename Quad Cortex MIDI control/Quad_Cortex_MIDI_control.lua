@@ -2,7 +2,7 @@
 -- @author Bertrand C
 -- @version 2.3-dev
 -- @changelog
---   - Add main action to custom toolbar
+--   - Add info after first config on how to add a toolbar button for easy access, or re-execute the setup wizard if needed.
 -- @about
 --   # Quad Cortex MIDI control
 --   Real-time MIDI control for Neural DSP Quad Cortex via Reaper Regions.
