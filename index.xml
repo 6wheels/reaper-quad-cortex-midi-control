@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<index version="2.0-dev" name="Quad Cortex MIDI control" commit="main">
+  <category name="Regions">
+    <reapack name="Quad_Cortex_MIDI_Control.lua" type="script" desc="Quad Cortex MIDI control Engine">
+      <metadata>
+        <description>
+          Advanced MIDI automation for Neural DSP Quad Cortex using Reaper Regions.
+          Includes automatic track setup and transport automation (Tuner/GigView).
+        </description>
+        <link rel="website">https://github.com/6wheels/reaper-quad-cortex-midi-control</link>
+      </metadata>
+      <version name="2.0-dev" author="Bertrand C" time="2026-03-12T12:00:00Z">
+        <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/main/Quad%20Cortex%20MIDI%20Control/Quad_Cortex_MIDI_control.lua</source>
+        <source>https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/main/Quad%20Cortex%20MIDI%20Control/Quad_Cortex_MIDI_control_setup.lua</source>
+        <source>https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/main/Quad%20Cortex%20MIDI%20Control/lib.lua</source>
+      </version>
+    </reapack>
+  </category>
+</index>
