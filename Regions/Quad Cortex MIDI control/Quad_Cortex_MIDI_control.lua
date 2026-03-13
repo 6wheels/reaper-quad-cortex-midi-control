@@ -1,8 +1,8 @@
--- @description Quad Cortex MIDI Control
+-- @description Quad Cortex MIDI control
 -- @author Bertrand C
 -- @version 2.0-dev
 -- @changelog
---   - Split from original Quad Cortex MIDI Control script to create a more modular and maintainable codebase.
+--   - Split from original Quad Cortex MIDI control script to create a more modular and maintainable codebase.
 --   - Added a setup wizard for first-time configuration.
 --   - Improved logging and error handling.
 --   - Automatically creates the MIDI output track if it doesn't exist.
@@ -11,7 +11,7 @@
 --   It may contain experimental features or bugs.
 --   For the stable version, please use the official ReaPack/ReaTeam repositories.
 --
---   # Quad Cortex MIDI Control
+--   # Quad Cortex MIDI control
 --   Real-time MIDI control for Neural DSP Quad Cortex via Reaper Regions.
 --   - Automates Presets using "#BankLetter" (e.g., #1A).
 --   - Automates Scenes using "!Sx" (e.g., !S1 or !SA).
@@ -23,7 +23,7 @@
 --
 --   1. AUTOMATIC INSTALLATION & SETUP
 --      - Run this script. If it's the first time, the SETUP WIZARD will open.
---      - The script AUTOMATICALLY creates a dedicated MIDI track (Default: "Quad Cortex MIDI Control").
+--      - The script AUTOMATICALLY creates a dedicated MIDI track (Default: "Quad Cortex MIDI control").
 --      - This track is pre-configured: Armed, Monitoring ON, and Record DISABLED (Mode 2).
 --      - In the Wizard, select the correct MIDI Hardware Output ID for your QC.
 --   ---

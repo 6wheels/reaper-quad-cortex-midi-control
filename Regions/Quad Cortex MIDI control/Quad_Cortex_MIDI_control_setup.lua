@@ -1,4 +1,4 @@
--- @description Setup Wizard for Quad Cortex MIDI Control
+-- @description Setup Wizard for Quad Cortex MIDI control
 -- @author Bertrand C
 -- @version 2.0-dev
 -- @noindex

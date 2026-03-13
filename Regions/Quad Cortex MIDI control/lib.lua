@@ -1,4 +1,4 @@
--- @description Core library for Quad Cortex MIDI Control
+-- @description Core library for Quad Cortex MIDI control
 -- @author Bertrand C
 -- @version 2.0-dev
 -- @noindex
@@ -12,7 +12,7 @@ lib.SettingsPath = info.source:match("@?(.*[\\/])") .. lib.SettingsFile
 lib.Defaults = {
     MIDI_CHANNEL    = "1",
     MIDI_OUTPUT_ID  = "0",
-    TRACK_NAME      = "Quad Cortex MIDI Control",
+    TRACK_NAME      = "Quad Cortex MIDI control",
     PRESET_PREFIX   = "#",
     SCENE_PREFIX    = "!S",
     AUTO_TUNER      = "false",

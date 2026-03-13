@@ -1,4 +1,4 @@
-# Quad Cortex MIDI Control for Reaper
+# Quad Cortex MIDI control for Reaper
 
 Automate your **Neural DSP Quad Cortex** directly from the Reaper timeline.
 
@@ -17,7 +17,7 @@ Automate your **Neural DSP Quad Cortex** directly from the Reaper timeline.
 
 | Version | Status | Source |
 | :--- | :--- | :--- |
-| **Stable** | Recommended for Live/Studio | Search `Quad Cortex MIDI Control` in ReaPack (Standard repos) |
+| **Stable** | Recommended for Live/Studio | Search `Quad Cortex MIDI control` in ReaPack (Standard repos) |
 | **Development** | Experimental / New features | Add this GitHub URL to your ReaPack repositories |
 
 ## Installation
@@ -25,7 +25,7 @@ Automate your **Neural DSP Quad Cortex** directly from the Reaper timeline.
 ### Stable Version (Easiest)
 No extra steps required if you have ReaPack installed:
 1. Open **Extensions > ReaPack > Browse packages**.
-2. Search for `Quad Cortex MIDI Control`.
+2. Search for `Quad Cortex MIDI control`.
 3. Right-click and **Install**.
 
 ### Development Version
@@ -38,7 +38,7 @@ To test the latest features before they hit the stable release:
 4. Install the package as usual.
 
 #### Manually with Github
-1. Download the `Quad Cortex MIDI Control` folder from this repository.
+1. Download the `Quad Cortex MIDI control` folder from this repository.
 2. Place it in your Reaper `Scripts` directory.
 3. Load `Quad_Cortex_MIDI_Control.lua` in the Actions List.
 
