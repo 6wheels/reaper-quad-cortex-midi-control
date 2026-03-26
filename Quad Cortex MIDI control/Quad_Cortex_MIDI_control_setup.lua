@@ -7,55 +7,82 @@ local lib = dofile(base_path .. "lib.lua")
 
 function RunSetupWizard()
     lib.LoadSettings()
-    local s = lib.Config
 
-    local midi_list = lib.GetMidiOutputsList()
-    reaper.ClearConsole()
-    reaper.ShowConsoleMsg(midi_list)
-    reaper.ShowConsoleMsg("\nLook at the list above to find your MIDI Hardware ID.\n")
+    local stage = 1 
+    local temp_id = lib.Config.MIDI_HARDWARE_ID
 
-    -- extrawidth=200 for better readability the dedicated track name that can be quite long
-    local captions = "extrawidth=200,MIDI Channel (1-16),Hardware MIDI Out ID (see Console),Dedicated Track Name,Preset Prefix,Scene Prefix,Tuner on Stop? (y/n),GigView on Play? (y/n),Log Level (0-2)"
-    
-    local csv = string.format("%s,%s,%s,%s,%s,%s,%s,%s", 
-        s.MIDI_CHANNEL, s.MIDI_OUTPUT_ID, s.TRACK_NAME, s.PRESET_PREFIX, s.SCENE_PREFIX,
-        (s.AUTO_TUNER == "true" and "y" or "n"), (s.AUTO_GIGVIEW == "true" and "y" or "n"), s.LOG_LEVEL)
+    while stage <= 2 do
+        if stage == 1 then
+            local midi_list = lib.GetMidiOutputsList()
+            reaper.MB(midi_list, "QC MIDI Control Setup - MIDI Device List", 0)
 
-    local retval, user_input = reaper.GetUserInputs("Quad Cortex Setup", 8, captions, csv)
-    
-    if retval then
-        local ch, id, name, p_pre, p_sce, tuner, gig, log = user_input:match("([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)")
-        
-        local updated = {
-            MIDI_CHANNEL   = ch,
-            MIDI_OUTPUT_ID = id,
-            TRACK_NAME     = name:match("^%s*(.-)%s*$"), 
-            PRESET_PREFIX  = p_pre,
-            SCENE_PREFIX   = p_sce,
-            AUTO_TUNER     = (tuner:lower():find("y") or tuner:lower() == "true") and "true" or "false",
-            AUTO_GIGVIEW   = (gig:lower():find("y") or gig:lower() == "true") and "true" or "false",
-            LOG_LEVEL      = log
-        }
-        
-        lib.SaveSettings(updated)
+            local ok1, user_id = reaper.GetUserInputs("QC MIDI Control Setup - Hardware Config (1/2)", 1,
+                "extrawidth=100,Enter MIDI Hardware ID:", temp_id)
 
-        local helpMsg = "Configuration saved successfully!\n\n" ..
-                        "--- QUICK START ---\n" ..
-                        "1. Right-click on any Toolbar > Customize toolbar...\n" ..
-                        "2. Click 'Add...' and search for: Quad_Cortex_MIDI_control\n" ..
-                        "3. Select it and click 'Select/Close'.\n\n" ..
-                        "--- CHANGING SETTINGS ---\n" ..
-                        "To modify your configuration later, simply run the setup action from the Action List:\n" ..
-                        "Action: Quad_Cortex_MIDI_control_setup\n\n" ..
-                        "The main button will light up when the synchronization is active."
-        
-        reaper.ShowMessageBox(helpMsg, "QC MIDI Control - Setup Complete", 0)
+            if not ok1 then return false end 
 
-        lib.EnsureControlTrack()
+            local is_ok, _ = lib.CheckMidiDevice(user_id)
 
-        return true
+            if is_ok then
+                temp_id = user_id
+                stage = 2 
+            else
+                reaper.MB("Error: MIDI Hardware ID '" .. user_id .. "' is invalid.", "Hardware Error", 0)
+            end
+
+        elseif stage == 2 then
+            local step2_captions = "extrawidth=200,MIDI Channel (1-16),Dedicated Track Name,Preset Prefix (#),Scene Prefix (!S),Tuner on Stop? (y/n),GigView on Play? (y/n),Log Level (0-2)"
+            local step2_defaults = string.format("%s,%s,%s,%s,%s,%s,%s",
+                lib.Config.MIDI_CHANNEL, lib.Config.TRACK_NAME, lib.Config.PRESET_PREFIX,
+                lib.Config.SCENE_PREFIX, (lib.Config.AUTO_TUNER == "true" and "y" or "n"),
+                (lib.Config.AUTO_GIGVIEW == "true" and "y" or "n"), lib.Config.LOG_LEVEL
+            )
+
+            local ok2, user_settings = reaper.GetUserInputs("QC MIDI Control Setup - Settings (2/2)", 7, step2_captions, step2_defaults)
+            
+            if not ok2 then return false end 
+
+            local s = {}
+            for val in (user_settings .. ","):gmatch("(.-),") do table.insert(s, val) end
+            
+            if #s >= 7 then
+                local updated = {
+                    MIDI_HARDWARE_ID = lib.getValueOrDefault(temp_id, lib.Defaults.MIDI_HARDWARE_ID),
+                    MIDI_CHANNEL     = lib.getValueOrDefault(s[1], lib.Defaults.MIDI_CHANNEL),
+                    TRACK_NAME       = lib.getValueOrDefault(s[2]:match("^%s*(.-)%s*$"), lib.Defaults.TRACK_NAME),
+                    PRESET_PREFIX    = lib.getValueOrDefault(s[3], lib.Defaults.PRESET_PREFIX),
+                    SCENE_PREFIX     = lib.getValueOrDefault(s[4], lib.Defaults.SCENE_PREFIX),
+
+                    AUTO_TUNER       = lib.getBoolOrDefault(s[5], lib.Defaults.AUTO_TUNER),
+                    AUTO_GIGVIEW     = lib.getBoolOrDefault(s[6], lib.Defaults.AUTO_GIGVIEW),
+
+                    LOG_LEVEL        = lib.getValueOrDefault(s[7], lib.Defaults.LOG_LEVEL)
+                }
+                
+                local old_config = lib.Config
+                lib.Config = updated
+                
+                if lib.EnsureControlTrack() then
+                    lib.SaveSettings(updated)
+                    
+                    if tonumber(updated.LOG_LEVEL) == 0 then
+                        reaper.MB("Setup successful!\n\nThe configuration has been saved.\n\n" ..
+                            "NOTE: Log Level is set to 0 (SILENT).\nIf opened, you can now SAFELY CLOSE the 'ReaScript console output' window.\n" ..
+                            "The script will keep running in the background.", "QC MIDI Control Setup - Success", 0)
+                    else
+                        lib.Log("The script is now monitoring your project.", 1)
+                        lib.Log("Activity logs will appear here.", 1)
+                    end
+
+                    stage = 3
+                else
+                    lib.Config = old_config
+                    reaper.MB("Could not apply track configuration.\nPlease check your settings and try again.", "Setup Error", 0)
+                end
+            end
+        end
     end
-    return false
+    return true
 end
 
 return RunSetupWizard()

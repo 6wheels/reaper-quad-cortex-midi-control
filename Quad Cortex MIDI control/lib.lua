@@ -9,8 +9,8 @@ local info = debug.getinfo(1,'S')
 lib.SettingsPath = info.source:match("@?(.*[\\/])") .. lib.SettingsFile
 
 lib.Defaults = {
+    MIDI_HARDWARE_ID  = "0",
     MIDI_CHANNEL    = "1",
-    MIDI_OUTPUT_ID  = "0",
     TRACK_NAME      = "Quad Cortex MIDI control",
     PRESET_PREFIX   = "#",
     SCENE_PREFIX    = "!S",
@@ -23,30 +23,28 @@ lib.Config = {}
 for k, v in pairs(lib.Defaults) do lib.Config[k] = v end
 
 function lib.Log(message, level)
-    level = level or 1
-    local activeLevel = tonumber(lib.Config.LOG_LEVEL) or 1
-    if level <= activeLevel then 
-        local prefix = (level == 2) and "[DEBUG] " or "[INFO] "
-        reaper.ShowConsoleMsg(prefix .. tostring(message) .. "\n") 
+    local current_level = tonumber(lib.Config.LOG_LEVEL) or 1
+    if current_level > 0 and level <= current_level then
+        reaper.ShowConsoleMsg(tostring(message) .. "\n")
     end
 end
 
 function lib.PrintConfig()
     local currentLevel = tonumber(lib.Config.LOG_LEVEL) or 1
     if currentLevel >= 2 then
-        lib.Log("--- Quad Cortex Configuration ---", 2)
-        local keys = {"MIDI_CHANNEL", "MIDI_OUTPUT_ID", "TRACK_NAME", "PRESET_PREFIX", "SCENE_PREFIX", "AUTO_TUNER", "AUTO_GIGVIEW", "LOG_LEVEL"}
+        lib.Log("--- Configuration ---", 2)
+        local keys = {"MIDI_HARDWARE_ID", "MIDI_CHANNEL", "TRACK_NAME", "PRESET_PREFIX", "SCENE_PREFIX", "AUTO_TUNER", "AUTO_GIGVIEW", "LOG_LEVEL"}
         for _, k in ipairs(keys) do
             lib.Log(string.format("%-18s = %s", k, tostring(lib.Config[k])), 2)
         end
-        lib.Log("----------------------------------", 2)
+        lib.Log("---------------------", 2)
     end
 end
 
 function lib.LoadSettings()
     local f = io.open(lib.SettingsPath, "r")
     if not f then return false end
-    
+
     local fileContent = {}
     for line in f:lines() do
         local key, value = line:match("^%s*([%w_]+)%s*=%s*(.*)$")
@@ -55,15 +53,15 @@ function lib.LoadSettings()
         end
     end
     f:close()
-    
+
     local keysFound = 0
-    for k, _ in pairs(lib.Defaults) do 
-        if fileContent[k] ~= nil then 
-            lib.Config[k] = fileContent[k] 
+    for k, _ in pairs(lib.Defaults) do
+        if fileContent[k] ~= nil then
+            lib.Config[k] = fileContent[k]
             keysFound = keysFound + 1
         end
     end
-    
+
     if keysFound > 0 then
         lib.PrintConfig()
         return true
@@ -74,7 +72,7 @@ end
 function lib.SaveSettings(settingsTable)
     local f = io.open(lib.SettingsPath, "w")
     if f then
-        local keys = {"MIDI_CHANNEL", "MIDI_OUTPUT_ID", "TRACK_NAME", "PRESET_PREFIX", "SCENE_PREFIX", "AUTO_TUNER", "AUTO_GIGVIEW", "LOG_LEVEL"}
+        local keys = {"MIDI_HARDWARE_ID", "MIDI_CHANNEL", "TRACK_NAME", "PRESET_PREFIX", "SCENE_PREFIX", "AUTO_TUNER", "AUTO_GIGVIEW", "LOG_LEVEL"}
         for _, k in ipairs(keys) do 
             local val = tostring(settingsTable[k])
             f:write(string.format("%s=%s\n", k, val))
@@ -82,7 +80,6 @@ function lib.SaveSettings(settingsTable)
         end
         f:close()
         lib.Log("Configuration saved.", 1)
-        lib.PrintConfig()
         return true
     end
     return false
@@ -96,7 +93,7 @@ end
 
 function lib.HandleExit()
     lib.SetToolbarButtonState(0)
-    lib.Log("Engine Deactivated", 1)
+    lib.Log("Engine stopped.", 1)
 end
 
 function lib.SendMidi(status, d1, d2)
@@ -106,57 +103,57 @@ function lib.SendMidi(status, d1, d2)
 end
 
 function lib.GetMidiOutputsList()
-    local dev_list = "\n--- CURRENTLY AVAILABLE MIDI DEVICES ---\n"
     local num_outputs = reaper.GetNumMIDIOutputs()
-    if num_outputs == 0 then return dev_list .. "(No MIDI outputs detected)\n" end
-    
+    if num_outputs == 0 then return "No MIDI devices found." end
+
+    local device_list = "Available MIDI devices:\n\nID -> Name\n"
     for i = 0, num_outputs - 1 do
         local retval, name = reaper.GetMIDIOutputName(i, "")
         if retval then
-            dev_list = dev_list .. string.format("ID %d : %s\n", i, name)
+            device_list = device_list .. string.format("%d   -> %s\n", i, name)
         end
     end
-    dev_list = dev_list .. "----------------------------------------\n"
-    return dev_list
+    return device_list
+end
+
+function lib.CheckMidiDevice(id)
+    local id_num = tonumber(id)
+    if not id_num then return false, "Invalid ID format" end
+    
+    local retval, name = reaper.GetMIDIOutputName(id_num, "")
+    if retval then
+        return true, name
+    else
+        return false, "Device not found"
+    end
 end
 
 function lib.EnsureControlTrack()
-    local trackName = lib.Config.TRACK_NAME or lib.Defaults.TRACK_NAME
-    local hwDeviceId = tonumber(lib.Config.MIDI_OUTPUT_ID) or -1
-    
-    if hwDeviceId >= 0 then
-        local retval, name = reaper.GetMIDIOutputName(hwDeviceId, "")
-        if not retval then
-            reaper.ClearConsole()
-            reaper.ShowConsoleMsg("ERROR: MIDI Device ID " .. hwDeviceId .. " is missing!\n")
-            reaper.ShowConsoleMsg(lib.GetMidiOutputsList())
-            
-            local errorMsg = "The assigned MIDI Device (ID " .. hwDeviceId .. ") is not connected.\n\n" ..
-                             "1. Check the Reaper Console for available IDs.\n" ..
-                             "2. Run 'Quad_Cortex_MIDI_control_setup' to update your settings.\n\n" ..
-                             "The script will now stop to prevent routing errors."
-            
-            reaper.MB(errorMsg, "QC MIDI Control - Hardware Error", 0)
-            return false
-        end
+    local hwDeviceId = tonumber(lib.Config.MIDI_HARDWARE_ID) or -1
+    local is_valid, _ = lib.CheckMidiDevice(hwDeviceId)
+
+    if not is_valid then 
+        return false 
     end
 
+    local trackName = lib.Config.TRACK_NAME or lib.Defaults.TRACK_NAME
     local targetTrack = nil
+
     for i = 0, reaper.CountTracks(0) - 1 do
         local track = reaper.GetTrack(0, i)
         local _, name = reaper.GetSetMediaTrackInfo_String(track, "P_NAME", "", false)
         if name == trackName then targetTrack = track break end
     end
+
     if not targetTrack then
         reaper.InsertTrackAtIndex(0, true)
         targetTrack = reaper.GetTrack(0, 0)
         reaper.GetSetMediaTrackInfo_String(targetTrack, "P_NAME", trackName, true)
-        lib.Log("Created MIDI Output Track: " .. trackName, 1)
     end
-    
-    local packedValue = (hwDeviceId >= 0) and ((hwDeviceId << 5) + 0) or -1
+
+    local packedValue = (hwDeviceId << 5) + 0 
     reaper.SetMediaTrackInfo_Value(targetTrack, "I_MIDIHWOUT", packedValue)
-    
+
     reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECINPUT", 6080)
     reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECARM", 1)
     reaper.SetMediaTrackInfo_Value(targetTrack, "I_RECMON", 1)
@@ -201,6 +198,20 @@ function lib.GetProjectState(pos)
         end
     end
     return state
+end
+
+function lib.getValueOrDefault(input, default)
+    if input == nil or input == "" then
+        return default
+    end
+    return input
+end
+
+function lib.getBoolOrDefault(input, default)
+    if input == nil or input == "" then
+        return default
+    end
+    return (input:lower():find("y") or input:lower() == "true") and "true" or "false"
 end
 
 return lib
