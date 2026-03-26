@@ -74,7 +74,10 @@ On the first run, a **Setup Wizard** will appear. You can relaunch it at any tim
 Create regions in the timeline and name them using your prefixes:
 * **To change a Preset**: Name a region `#1A` (Bank 1, Preset A).
 * **To change a Scene**: Name a region `!SA` (Scene A).
-* **Combined**: Place a small `!SB` region inside a larger `#4D` region to switch to Scene B while staying in Preset 4D.
+* **Combined**:
+  - Name the region with both preset and scene change, ex: `#1A !SA`
+  - Place a small `!SB` region inside a larger `#4D` region to switch to Scene B while staying in Preset 4D.
+  - Anything after preset and scene will be ignored, but it can be used to name the region as usual, ex: `#1A !SA Chorus`
 
 ### 2. Tempo Sync (BPM)
 To sync your QC's delays and time-based effects to Reaper's tempo:
@@ -84,6 +87,16 @@ To sync your QC's delays and time-based effects to Reaper's tempo:
 4. The script's dedicated track will automatically relay this clock to your hardware.
 
 *Note: If regions overlap, the shortest Region takes priority for Scene changes (ideal for nested scenes within a preset).*
+
+### 💡 Pro Tip: Visual Organization (REAPER 7+)
+
+REAPER 7 allows you to display multiple **Region Lanes**. This is highly recommended for this script to keep your timeline clean:
+
+1. Right-click the **Region/Marker area** at the top of the timeline.
+2. Select **Lanes > Display multiple lanes**.
+3. You can now drag your **Scene regions (!S)** to a different lane than your **Preset regions (#)**.
+
+This makes it much easier to see which Scene is active within a larger Preset region at a glance.
 
 ---
 

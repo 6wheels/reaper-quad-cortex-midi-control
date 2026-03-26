@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Quad Cortex MIDI control" commit="5123be40a215ee1146714c91bafef7bc2f6200e8">
+<index version="1" name="Quad Cortex MIDI control" commit="386120f949a306774497815b561cdd2ef70f99d0">
   <category name="Quad Cortex MIDI control">
     <reapack name="Quad_Cortex_MIDI_control.lua" type="script" desc="Quad Cortex MIDI control">
       <metadata>
@@ -79,6 +79,13 @@
         <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/5123be40a215ee1146714c91bafef7bc2f6200e8/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
         <source main="main" file="Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/5123be40a215ee1146714c91bafef7bc2f6200e8/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control_setup.lua</source>
         <source file="lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/5123be40a215ee1146714c91bafef7bc2f6200e8/Quad%20Cortex%20MIDI%20control/lib.lua</source>
+      </version>
+      <version name="2.3.1" author="Bertrand C" time="2026-03-26T09:25:57Z">
+        <changelog><![CDATA[- Fix reapack-index linked to wrong git commit
+- README update with region combination name examples]]></changelog>
+        <source main="main">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/386120f949a306774497815b561cdd2ef70f99d0/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+        <source main="main" file="Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/386120f949a306774497815b561cdd2ef70f99d0/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control_setup.lua</source>
+        <source file="lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/386120f949a306774497815b561cdd2ef70f99d0/Quad%20Cortex%20MIDI%20control/lib.lua</source>
       </version>
     </reapack>
   </category>
