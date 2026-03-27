@@ -1,28 +1,65 @@
-name: deploy
+name: Dev to Main Delivery
+
 on:
   push:
-    branches: [main]
+    branches:
+      - dev
+
 jobs:
-  reapack-index:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Fetch repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Configure git
-      run: |-
-        git config user.name  'ReaTeam Bot'
-        git config user.email 'reateam-bot@cfillion.ca'
-    - name: Install Pandoc
-      run:  sudo apt-get install -yy pandoc
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.2
-    - name: Install reapack-index
-      run:  gem install reapack-index
-    - name: Update index.xml
-      run:  reapack-index --commit
-    - name: Push changes
-      run:  git push
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required to count commits for versioning
+
+      - name: Process Versioning and Index Cleanup
+        run: |
+          # 1. Extract base version from the main script (e.g., 2.4.1-dev)
+          RAW_VERSION=$(grep "@version" Quad_Cortex_MIDI_control.lua | head -n 1 | awk '{print $3}')
+          REV_COUNT=$(git rev-list --count HEAD)
+          
+          echo "Current version in code: $RAW_VERSION"
+
+          # 2. Download the existing index.xml from the 'main' branch to preserve history
+          # We use the GitHub raw URL for the current repository
+          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "No existing index found on main branch."
+
+          if [[ $RAW_VERSION == *"-dev"* ]]; then
+            # DEVELOPMENT MODE:
+            # Append the commit count to create a unique version (e.g., 2.4.1-dev.452)
+            NEW_VERSION="${RAW_VERSION}.${REV_COUNT}"
+            sed -i "s/@version $RAW_VERSION/@version $NEW_VERSION/g" Quad_Cortex_MIDI_control.lua
+            echo "Building DEV version: $NEW_VERSION"
+          else
+            # STABLE RELEASE MODE:
+            # If the version does not contain "-dev", we clean the index
+            if [ -f index.xml ]; then
+              # Use xmlstarlet (pre-installed on Ubuntu) to remove all <version> blocks containing "-dev"
+              # This ensures the stable history remains clean of temporary dev builds
+              xmlstarlet ed -L -d "//version[contains(@name, '-dev')]" index.xml
+              echo "Stable release detected: Purged all dev versions from index.xml"
+            fi
+          fi
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+
+      - name: Install ReaPack-index
+        run: gem install reapack-index
+
+      - name: Build Index
+        run: |
+          # Scans current directory and updates the downloaded index.xml
+          reapack-index
+
+      - name: Deploy to Main Branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: main # Delivers the final files to the 'main' branch
+          folder: .    # Deploy the entire root folder
+          commit-message: "Update delivery [rev $REV_COUNT] [skip ci]"
+          clean: true  # Ensures 'main' is a perfect mirror of the build (removes deleted dev versions)

@@ -1,18 +1,24 @@
-name: check
-on: [push, pull_request]
+name: Script Validation
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+
 jobs:
-  reapack-index:
+  check:
     runs-on: ubuntu-latest
     steps:
-    - name: Fetch repository
-      uses: actions/checkout@v4
-    - name: Install Pandoc
-      run:  sudo apt-get install -yy pandoc
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.2
-    - name: Install reapack-index
-      run:  gem install reapack-index
-    - name: Validate packages
-      run:  reapack-index --check
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+
+      - name: Install reapack-index
+        run: gem install reapack-index
+
+      - name: Run Metadata Check
+        run: reapack-index --check
