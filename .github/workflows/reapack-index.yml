@@ -14,7 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install SysDeps
-        run: sudo apt-get update && sudo apt-get install -y pandoc
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -37,7 +39,9 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install SysDeps
-        run: sudo apt-get update && sudo apt-get install -y xmlstarlet pandoc
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xmlstarlet pandoc
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
