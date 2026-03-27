@@ -53,60 +53,61 @@ jobs:
           echo "--- 🛠️ Starting Deployment Pipeline ---"
 
           # 1. Identity
-          echo "Step 1: Configuring Git identity..."
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
           # 2. File & Version Search
-          echo "Step 2: Locating script and extracting version info..."
           SCRIPT_PATH=$(find . -name "Quad_Cortex_MIDI_control.lua" -print -quit)
-          if [ -z "$SCRIPT_PATH" ]; then echo "❌ FATAL: Script not found!"; exit 1; fi
-          
           RAW_VERSION=$(grep "@version" "$SCRIPT_PATH" | head -n 1 | awk '{print $3}')
           REV_COUNT=$(git rev-list --count HEAD)
-          echo "Found script: $SCRIPT_PATH"
-          echo "Base version: $RAW_VERSION | Revision count: $REV_COUNT"
-
-          # 3. Index Handling
-          echo "Step 3: Fetching and cleaning index from 'main'..."
-          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "⚠️ No existing index.xml found."
-          if [ -f index.xml ]; then
-            BEFORE_COUNT=$(grep -c "<version" index.xml || echo "0")
-            xmlstarlet ed -L -d "//version[contains(@name, '-dev')]" index.xml
-            AFTER_COUNT=$(grep -c "<version" index.xml || echo "0")
-            echo "Cleaned index: removed $((BEFORE_COUNT - AFTER_COUNT)) dev versions."
-          fi
-
-          # 4. Version Injection
+          
           if [[ $RAW_VERSION == *"-dev"* ]]; then
             DEPLOY_VER="${RAW_VERSION}.${REV_COUNT}"
-            echo "Step 4: Development mode. Updating version to $DEPLOY_VER..."
-            sed -i "s/@version $RAW_VERSION/@version $DEPLOY_VER/g" "$SCRIPT_PATH"
           else
             DEPLOY_VER="$RAW_VERSION"
-            echo "Step 4: Stable mode. Using version $DEPLOY_VER (no revision suffix)."
           fi
+          echo "Target Version: $DEPLOY_VER"
 
-          # 5. First Commit (Code)
-          echo "Step 5: Creating the Code Commit (SHA-A)..."
+          # 3. Fetch current index (CRITICAL STEP)
+          echo "Step 3: Fetching index.xml from 'main'..."
+          # -s (silent), -f (fail on HTTP error), -L (follow redirects)
+          if ! curl -s -f -L "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml; then
+            echo "❌ FATAL: Unable to fetch index.xml from 'main' branch!"
+            echo "This could mean the file is missing, the branch is protected, or a network error occurred."
+            echo "To prevent overwriting your repository history, the process is stopping now."
+            exit 1
+          fi
+          echo "✅ index.xml successfully retrieved."
+
+          # 4. Update the .lua file
+          sed -i "s/@version $RAW_VERSION/@version $DEPLOY_VER/g" "$SCRIPT_PATH"
+
+          # 5. FIRST COMMIT: The code change (SHA-A)
           git add "$SCRIPT_PATH"
           git commit -m "Release Code: $DEPLOY_VER [rev $REV_COUNT]"
-          CURRENT_SHA=$(git rev-parse HEAD)
-          echo "SHA-A created: $CURRENT_SHA"
+          echo "SHA-A created."
 
-          # 6. Indexing
-          echo "Step 6: Running reapack-index (linking to SHA-A)..."
+          # 6. INDEXING: Let reapack-index do its thing (it will add the old versions back)
+          echo "Step 6: Running reapack-index..."
           bundle exec reapack-index --no-commit
-          echo "index.xml updated successfully."
 
-          # 7. Second Commit (Index)
-          echo "Step 7: Creating the Index Commit (SHA-B)..."
+          # 7. SURGICAL CLEANUP: Delete dev versions that are NOT the current one
+          # Logic: Find all <version> where name contains 'dev' AND name is NOT our new version
+          echo "Step 7: Pruning phantom dev versions from index.xml..."
+          if [ -f index.xml ]; then
+            BEFORE=$(xmlstarlet sel -t -v "count(//*[local-name()='version'])" index.xml || echo "0")
+            
+            # Magi command to keep only stable and current dev versions, but delete old dev ones
+            xmlstarlet ed -L -d "//*[local-name()='version'][contains(@name, '-dev') and @name != '$DEPLOY_VER']" index.xml
+            
+            AFTER=$(xmlstarlet sel -t -v "count(//*[local-name()='version'])" index.xml || echo "0")
+            echo "Cleaned index: $BEFORE -> $AFTER versions (Removed $((BEFORE - AFTER)) old dev entries)."
+          fi
+
+          # 8. Second Commit (Index)
           git add -f index.xml
           git commit -m "Update Index for $DEPLOY_VER [skip ci]"
-          FINAL_SHA=$(git rev-parse HEAD)
-          echo "SHA-B created: $FINAL_SHA"
 
-          # 8. Final Push
-          echo "Step 8: Force-pushing to 'main' branch..."
+          # 9. Final Push
           git push origin HEAD:main --force
           echo "--- 🎉 Deployment Complete! ---"
