@@ -54,21 +54,34 @@ jobs:
 
       - name: Process Versioning and Index Cleanup
         run: |
-          # 1. Extract base version
-          RAW_VERSION=$(grep "@version" Quad_Cortex_MIDI_control.lua | head -n 1 | awk '{print $3}')
+          # Stop the script execution if any command fails
+          set -e
+
+          # 1. Find the script path dynamically (searches in subdirectories)
+          SCRIPT_PATH=$(find . -name "Quad_Cortex_MIDI_control.lua" -print -quit)
+          
+          if [ -z "$SCRIPT_PATH" ]; then
+            echo "::error::File Quad_Cortex_MIDI_control.lua not found in any directory!"
+            exit 1
+          fi
+          
+          echo "Found script at: $SCRIPT_PATH"
+
+          # 2. Extract base version
+          RAW_VERSION=$(grep "@version" "$SCRIPT_PATH" | head -n 1 | awk '{print $3}')
           REV_COUNT=$(git rev-list --count HEAD)
           
-          # 2. Download existing index.xml
+          # 3. Download existing index.xml
           curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "No existing index found."
 
           if [[ $RAW_VERSION == *"-dev"* ]]; then
-            # DEV MODE: Version update
             NEW_VERSION="${RAW_VERSION}.${REV_COUNT}"
-            sed -i "s/@version $RAW_VERSION/@version $NEW_VERSION/g" Quad_Cortex_MIDI_control.lua
+            sed -i "s/@version $RAW_VERSION/@version $NEW_VERSION/g" "$SCRIPT_PATH"
+            echo "Version updated to $NEW_VERSION in $SCRIPT_PATH"
           else
-            # STABLE MODE: XML cleanup
             if [ -f index.xml ]; then
               xmlstarlet ed -L -d "//version[contains(@name, '-dev')]" index.xml
+              echo "Stable release: Purged dev versions."
             fi
           fi
 
