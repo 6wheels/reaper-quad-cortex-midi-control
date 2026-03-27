@@ -53,24 +53,31 @@ jobs:
           echo "--- 🛠️ Starting Deployment Pipeline ---"
 
           # 1. Identity
+          echo "Step 1: Configuring Git identity..."
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
           # 2. File & Version Search
+          echo "Step 2: Locating script and extracting version info..."
           SCRIPT_PATH=$(find . -name "Quad_Cortex_MIDI_control.lua" -print -quit)
+          if [ -z "$SCRIPT_PATH" ]; then echo "❌ FATAL: Script not found!"; exit 1; fi
+          
           RAW_VERSION=$(grep "@version" "$SCRIPT_PATH" | head -n 1 | awk '{print $3}')
           REV_COUNT=$(git rev-list --count HEAD)
           
+          # Logic: Stable vs Dev
           if [[ $RAW_VERSION == *"-dev"* ]]; then
             DEPLOY_VER="${RAW_VERSION}.${REV_COUNT}"
+            IS_STABLE=false
           else
             DEPLOY_VER="$RAW_VERSION"
+            IS_STABLE=true
           fi
-          echo "Target Version: $DEPLOY_VER"
+          echo "Found script: $SCRIPT_PATH"
+          echo "Target Version: $DEPLOY_VER (Stable: $IS_STABLE) | Revision: $REV_COUNT"
 
-          # 3. Fetch current index (CRITICAL STEP)
+          # 3. Secure Fetch of existing index
           echo "Step 3: Fetching index.xml from 'main'..."
-          # -s (silent), -f (fail on HTTP error), -L (follow redirects)
           if ! curl -s -f -L "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml; then
             echo "❌ FATAL: Unable to fetch index.xml from 'main' branch!"
             echo "This could mean the file is missing, the branch is protected, or a network error occurred."
@@ -80,34 +87,52 @@ jobs:
           echo "✅ index.xml successfully retrieved."
 
           # 4. Update the .lua file
+          echo "Step 4: Updating version in .lua file..."
           sed -i "s/@version $RAW_VERSION/@version $DEPLOY_VER/g" "$SCRIPT_PATH"
 
           # 5. FIRST COMMIT: The code change (SHA-A)
+          echo "Step 5: Creating the Code Commit (SHA-A)..."
           git add "$SCRIPT_PATH"
           git commit -m "Release Code: $DEPLOY_VER [rev $REV_COUNT]"
           echo "SHA-A created."
 
-          # 6. INDEXING: Let reapack-index do its thing (it will add the old versions back)
-          echo "Step 6: Running reapack-index..."
+          # 6. INDEXING
+          echo "Step 6: Running reapack-index (linking to SHA-A)..."
           bundle exec reapack-index --no-commit
 
-          # 7. SURGICAL CLEANUP: Delete dev versions that are NOT the current one
-          # Logic: Find all <version> where name contains 'dev' AND name is NOT our new version
+          # 7. SURGICAL CLEANUP: Delete old dev versions
           echo "Step 7: Pruning phantom dev versions from index.xml..."
           if [ -f index.xml ]; then
             BEFORE=$(xmlstarlet sel -t -v "count(//*[local-name()='version'])" index.xml || echo "0")
             
-            # Magi command to keep only stable and current dev versions, but delete old dev ones
+            # Magic command to keep only stable and current dev versions, but delete old dev ones
             xmlstarlet ed -L -d "//*[local-name()='version'][contains(@name, '-dev') and @name != '$DEPLOY_VER']" index.xml
             
             AFTER=$(xmlstarlet sel -t -v "count(//*[local-name()='version'])" index.xml || echo "0")
             echo "Cleaned index: $BEFORE -> $AFTER versions (Removed $((BEFORE - AFTER)) old dev entries)."
           fi
 
-          # 8. Second Commit (Index)
+          # 8. Second Commit (index)
+          echo "Step 8: Committing updated index.xml..."
           git add -f index.xml
-          git commit -m "Update Index for $DEPLOY_VER [skip ci]"
+          git commit -m "Update index for $DEPLOY_VER [skip ci]"
 
-          # 9. Final Push
+          # 9. Final Push to Main
+          echo "Step 9: Force-pushing sequence to 'main'..."
           git push origin HEAD:main --force
+
+          # 10. AUTOMATIC TAGGING (Only for stable releases)
+          if [ "$IS_STABLE" = true ]; then
+            echo "Step 10: Stable release detected. Checking for Tag: $DEPLOY_VER"
+            if git ls-remote --tags origin | grep -q "refs/tags/$DEPLOY_VER"; then
+              echo "⚠️ Tag $DEPLOY_VER already exists. Skipping."
+            else
+              git tag "$DEPLOY_VER"
+              git push origin "$DEPLOY_VER"
+              echo "✅ Tag '$DEPLOY_VER' successfully created and pushed."
+            fi
+          else
+            echo "Step 10: Development version. Skipping tag creation."
+          fi
+
           echo "--- 🎉 Deployment Complete! ---"
