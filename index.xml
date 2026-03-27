@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Quad Cortex MIDI control" commit="51662d541c7238d7d991549e62e57a021abaaace">
+<index version="1" name="Quad Cortex MIDI control" commit="f4f7f23a88f14a42a4a23ecb959548e5c226529b">
   <category name="Quad Cortex MIDI control">
     <reapack name="Quad_Cortex_MIDI_control.lua" type="script" desc="Quad Cortex MIDI control">
       <metadata>
@@ -93,6 +93,114 @@
         <source main="main" file="Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/51662d541c7238d7d991549e62e57a021abaaace/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control_setup.lua</source>
         <source file="lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/51662d541c7238d7d991549e62e57a021abaaace/Quad%20Cortex%20MIDI%20control/lib.lua</source>
       </version>
+      <version name="2.4.0-dev" author="Bertrand C" time="2026-03-26T20:19:38Z">
+        <changelog><![CDATA[- Setup Wizard globally improved with steps
+- Use of message box instead of console for setup instructions
+- Improved error handling for missing MIDI device
+- Better handling of default values in setup]]></changelog>
+        <source main="main" file="../Quad_Cortex_MIDI_control.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/f4f7f23a88f14a42a4a23ecb959548e5c226529b/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+        <source main="main" file="../Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/f4f7f23a88f14a42a4a23ecb959548e5c226529b/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+        <source main="main" file="../lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/f4f7f23a88f14a42a4a23ecb959548e5c226529b/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+      </version>
     </reapack>
   </category>
+  <metadata>
+    <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel0 \b \fs36 Quad Cortex MIDI control for Reaper\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Automate your {\b Neural DSP Quad Cortex} directly from the Reaper timeline.\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 \u10024 ? Key Features\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Zero-Touch Setup}: Automatically creates and configures a dedicated MIDI track (Armed, Monitoring ON, Record Disabled).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Automatic Hardware Routing}: Assigns your MIDI interface ID directly to the track routing.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Intelligent Regions}:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\b Presets}: Switch banks and presets using {\f1 #BankLetter} (e.g., {\f1 #1A}).\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\b Scenes}: Switch scenes (A to H) using {\f1 !SA} to {\f1 !SH}.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\b Inheritance}: Place Scene regions inside larger Preset regions for precise control.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Live/Studio Automation}:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\b Play}: Forces {\b Gig View} ON and turns {\b Tuner} OFF.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\b Stop/Pause}: Automatically activates the {\b Tuner} for silent breaks.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Smart Error Handling}: Detects if your MIDI hardware is unplugged and guides you through the fix.\sa180\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 \u9888 ?\u65039 ? Choosing your version\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 | Version | Status | Source | | :--- | :--- | :--- | | {\b Stable} | Recommended for Live/Studio | Search {\f1 Quad Cortex MIDI control} in ReaPack (Standard repos) | | {\b Development} | Experimental / New features | Add this GitHub URL to your ReaPack repositories |\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 Installation\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Stable Version (Easiest)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 No extra steps required if you have ReaPack installed:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab Open {\b Extensions > ReaPack > Browse packages}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab Search for {\f1 Quad Cortex MIDI control}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab Right-click and {\b Install}.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 Development Version\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Through Reapack and GitHub\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 To test the latest features before they hit the stable release:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab Copy this URL: {\f1 https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/main/index.xml}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab In Reaper: {\f1 Extensions > ReaPack > Import a repository}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab Paste the URL and click {\b OK}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 4.\tx360\tab Install the package as usual.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel3 \b \fs24 Manually with Github\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab Download the {\f1 Quad Cortex MIDI control} folder from this repository.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab Place it in your Reaper {\f1 Scripts} directory.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab Load {\f1 Quad_Cortex_MIDI_Control.lua} in the Actions List.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 \u55357 ?\u57056 ? Configuration (Setup Wizard)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 On the first run, a {\b Setup Wizard} will appear. You can relaunch it at any time by running the {\f1 Quad_Cortex_MIDI_control_setup} script from your Action List.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b MIDI Channel}: The MIDI channel your Quad Cortex is listening to (default: {\f1 1}).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Hardware MIDI Out ID}: The ID of your MIDI interface. A list of all available devices and their IDs is automatically displayed in the {\b Reaper Console} when the wizard opens.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Dedicated Track Name}: The name of the track the script will create and manage (default: {\f1 Quad Cortex MIDI Control}).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Preset Prefix}: The character used to identify Preset changes in Region names (default: {\f1 #}).\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Example: {\f1 #1A}, {\f1 #12C}}\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Scene Prefix}: The characters used to identify Scene changes in Region names (default: {\f1 !S}).\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\i Example: {\f1 !SA} to {\f1 !SH} (matches footswitches A-H).}\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Tuner on Stop? (y/n)}: If enabled, the QC Tuner activates when you stop playback.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b GigView on Play? (y/n)}: If enabled, the QC forces Gig View ON when you hit play.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Log Level (0-2)}:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 0}: Silent.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 1}: {\b [INFO]} Shows changes and transport status (Recommended).\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab {\f1 2}: {\b [DEBUG]} Shows full configuration and file operations.\sa180\sa180\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 \u55357 ?\u56960 ? Usage Instructions\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 1. Naming your Regions\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Create regions in the timeline and name them using your prefixes:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b To change a Preset}: Name a region {\f1 #1A} (Bank 1, Preset A).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b To change a Scene}: Name a region {\f1 !SA} (Scene A).\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Combined}:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Name the region with both preset and scene change, ex: {\f1 #1A !SA}\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Place a small {\f1 !SB} region inside a larger {\f1 #4D} region to switch to Scene B while staying in Preset 4D.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 \endash \tx360\tab Anything after preset and scene will be ignored, but it can be used to name the region as usual, ex: {\f1 #1A !SA Chorus}\sa180\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 2. Tempo Sync (BPM)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 To sync your QC's delays and time-based effects to Reaper's tempo:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab Go to {\f1 Preferences > MIDI Devices}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab Double-click your {\b MIDI Output}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab Check {\b "Send clock to this device"}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 4.\tx360\tab The script's dedicated track will automatically relay this clock to your hardware.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 {\i Note: If regions overlap, the shortest Region takes priority for Scene changes (ideal for nested scenes within a preset).}\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel2 \b \fs28 \u55357 ?\u56481 ? Pro Tip: Visual Organization (REAPER 7+)\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 REAPER 7 allows you to display multiple {\b Region Lanes}. This is highly recommended for this script to keep your timeline clean:\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 1.\tx360\tab Right-click the {\b Region/Marker area} at the top of the timeline.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 2.\tx360\tab Select {\b Lanes > Display multiple lanes}.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 3.\tx360\tab You can now drag your {\b Scene regions (!S)} to a different lane than your {\b Preset regions (#)}.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 This makes it much easier to see which Scene is active within a larger Preset region at a glance.\par}
+{\pard \qc \f0 \sa180 \li0 \fi0 \emdash\emdash\emdash\emdash\emdash\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 \u55357 ?\u56589 ? Troubleshooting\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Hardware Error}: If your MIDI interface is unplugged, the script will stop and show an error message. Check the Console to see currently available IDs and update your setup.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b MIDI Device missing from Console list}: If your device does not appear in the console during setup:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 1.\tx360\tab Ensure the device is properly connected and recognized by your Operating System {\i before} launching REAPER.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 2.\tx360\tab Check {\f1 Preferences > MIDI Devices} and ensure the output is not "Disabled".\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Slow Scene/Preset Changes (USB MIDI)}: If you are using the Quad Cortex via USB MIDI and switching feels sluggish:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 1.\tx360\tab Go to {\f1 Preferences > MIDI Devices}.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 2.\tx360\tab Right-click your QC Output and select {\b Configure output...}.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 3.\tx360\tab Check the box {\b "Open device in low latency/low precision mode"}. This often resolves timing issues with the QC's internal MIDI buffer.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Tempo / BPM Sync Issues}:\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 1.\tx360\tab In REAPER: Ensure {\b "Send clock to this device"} is checked in your MIDI Output settings.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 2.\tx360\tab On the Quad Cortex: Go to {\f1 Settings > MIDI} and ensure {\b MIDI Clock} is set to {\b ON} or {\b Receive}.\par}
+{\pard \ql \f0 \sa0 \li720 \fi-360 3.\tx360\tab Ensure the dedicated control track is not muted.\sa180\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Erratic Behavior (Multiple Tracks)}: The script identifies the control track by its name. If your project contains multiple tracks with the same name, the script may target the wrong one. {\b Always ensure only one dedicated control track exists.}\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b No MIDI reaching the QC}: Ensure the dedicated track is Armed and Monitoring is set to ON.\par}
+{\pard \ql \f0 \sa0 \li360 \fi-360 \bullet \tx360\tab {\b Logging}: Set {\f1 Log Level} to {\f1 2} to see exactly what MIDI messages are being sent and which track is being used in real-time.\sa180\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 \outlinelevel1 \b \fs32 License\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 This project is licensed under the {\b GNU General Public License v3.0}. You are free to share and modify this code, but you cannot monetize it, and any derivative work must remain Open Source under the same license.\par}
+}
+]]></description>
+  </metadata>
 </index>
