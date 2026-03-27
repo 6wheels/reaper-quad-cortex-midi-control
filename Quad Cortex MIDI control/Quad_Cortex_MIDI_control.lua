@@ -1,6 +1,6 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.4.0-dev
+-- @version 2.4.1-dev
 -- @changelog
 --   - Setup Wizard globally improved with steps
 --   - Use of message box instead of console for setup instructions
@@ -37,7 +37,7 @@
 -- @provides
 --   [main] . > ../Quad_Cortex_MIDI_control.lua
 --   [main] . > ../Quad_Cortex_MIDI_control_setup.lua
---   . > ../lib.lua
+--   [nomain] . > ../lib.lua
 -- @link GitHub Repository https://github.com/6wheels/reaper-quad-cortex-midi-control
 
 -- Main synchronization engine
