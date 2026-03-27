@@ -22,8 +22,10 @@ jobs:
           bundler-cache: true
       - name: Run Check
         run: |
-          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "No index"
+          echo "--- 🔍 Starting Metadata Validation ---"
+          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "⚠️ No index found on main, skipping comparative check."
           bundle exec reapack-index --check
+          echo "--- ✅ Validation Successful ---"
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,30 +46,63 @@ jobs:
       - name: Build and Sync
         run: |
           set -e
+          echo "--- 🛠️ Starting Deployment Pipeline ---"
+
+          # 1. Identity
+          echo "Step 1: Configuring Git identity..."
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          
+
+          # 2. File & Version Search
+          echo "Step 2: Locating script and extracting version info..."
           SCRIPT_PATH=$(find . -name "Quad_Cortex_MIDI_control.lua" -print -quit)
+          if [ -z "$SCRIPT_PATH" ]; then echo "❌ FATAL: Script not found!"; exit 1; fi
+          
           RAW_VERSION=$(grep "@version" "$SCRIPT_PATH" | head -n 1 | awk '{print $3}')
           REV_COUNT=$(git rev-list --count HEAD)
+          echo "Found script: $SCRIPT_PATH"
+          echo "Base version: $RAW_VERSION | Revision count: $REV_COUNT"
 
-          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "New index"
+          # 3. Index Handling
+          echo "Step 3: Fetching and cleaning index from 'main'..."
+          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "⚠️ No existing index.xml found."
           if [ -f index.xml ]; then
+            BEFORE_COUNT=$(grep -c "<version" index.xml || echo "0")
             xmlstarlet ed -L -d "//version[contains(@name, '-dev')]" index.xml
+            AFTER_COUNT=$(grep -c "<version" index.xml || echo "0")
+            echo "Cleaned index: removed $((BEFORE_COUNT - AFTER_COUNT)) dev versions."
           fi
 
+          # 4. Version Injection
           if [[ $RAW_VERSION == *"-dev"* ]]; then
             DEPLOY_VER="${RAW_VERSION}.${REV_COUNT}"
+            echo "Step 4: Development mode. Updating version to $DEPLOY_VER..."
             sed -i "s/@version $RAW_VERSION/@version $DEPLOY_VER/g" "$SCRIPT_PATH"
           else
             DEPLOY_VER="$RAW_VERSION"
+            echo "Step 4: Stable mode. Using version $DEPLOY_VER (no revision suffix)."
           fi
 
+          # 5. First Commit (Code)
+          echo "Step 5: Creating the Code Commit (SHA-A)..."
           git add "$SCRIPT_PATH"
           git commit -m "Release Code: $DEPLOY_VER [rev $REV_COUNT]"
-          
-          bundle exec reapack-index
-          
-          git add index.xml
+          CURRENT_SHA=$(git rev-parse HEAD)
+          echo "SHA-A created: $CURRENT_SHA"
+
+          # 6. Indexing
+          echo "Step 6: Running reapack-index (linking to SHA-A)..."
+          bundle exec reapack-index --no-commit
+          echo "index.xml updated successfully."
+
+          # 7. Second Commit (Index)
+          echo "Step 7: Creating the Index Commit (SHA-B)..."
+          git add -f index.xml
           git commit -m "Update Index for $DEPLOY_VER [skip ci]"
+          FINAL_SHA=$(git rev-parse HEAD)
+          echo "SHA-B created: $FINAL_SHA"
+
+          # 8. Final Push
+          echo "Step 8: Force-pushing to 'main' branch..."
           git push origin HEAD:main --force
+          echo "--- 🎉 Deployment Complete! ---"
