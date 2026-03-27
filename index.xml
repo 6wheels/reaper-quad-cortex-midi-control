@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Quad Cortex MIDI control" commit="f4f7f23a88f14a42a4a23ecb959548e5c226529b">
+<index version="1" name="Quad Cortex MIDI control" commit="95e722f48c6a17f286c38b2b17834369633e4301">
   <category name="Quad Cortex MIDI control">
     <reapack name="Quad_Cortex_MIDI_control.lua" type="script" desc="Quad Cortex MIDI control">
       <metadata>
@@ -101,6 +101,15 @@
         <source main="main" file="../Quad_Cortex_MIDI_control.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/f4f7f23a88f14a42a4a23ecb959548e5c226529b/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
         <source main="main" file="../Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/f4f7f23a88f14a42a4a23ecb959548e5c226529b/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
         <source main="main" file="../lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/f4f7f23a88f14a42a4a23ecb959548e5c226529b/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+      </version>
+      <version name="2.4.1-dev" author="Bertrand C" time="2026-03-27T08:31:22Z">
+        <changelog><![CDATA[- Setup Wizard globally improved with steps
+- Use of message box instead of console for setup instructions
+- Improved error handling for missing MIDI device
+- Better handling of default values in setup]]></changelog>
+        <source main="main" file="../Quad_Cortex_MIDI_control.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/95e722f48c6a17f286c38b2b17834369633e4301/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+        <source main="main" file="../Quad_Cortex_MIDI_control_setup.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/95e722f48c6a17f286c38b2b17834369633e4301/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
+        <source file="../lib.lua">https://github.com/6wheels/reaper-quad-cortex-midi-control/raw/95e722f48c6a17f286c38b2b17834369633e4301/Quad%20Cortex%20MIDI%20control/Quad_Cortex_MIDI_control.lua</source>
       </version>
     </reapack>
   </category>
