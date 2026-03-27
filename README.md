@@ -21,10 +21,15 @@ Automate your **Neural DSP Quad Cortex** directly from the Reaper timeline.
 
 ## ⚠️ Choosing your version
 
-| Version | Status | Source |
-| :--- | :--- | :--- |
-| **Stable** | Recommended for Live/Studio | Search `Quad Cortex MIDI control` in ReaPack (Standard repos) |
-| **Development** | Experimental / New features | Add this GitHub URL to your ReaPack repositories |
+### Stable Version
+
+* **Status**: Recommended for Live/Studio
+* **Source**: Search `Quad Cortex MIDI control` in ReaPack (Standard repos)
+
+### Development Version
+
+* **Status**: Experimental / New features
+* **Source**: Add this GitHub URL to your ReaPack repositories
 
 ## Installation
 
