@@ -1,0 +1,73 @@
+name: ReaPack Validation and Delivery
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SysDeps
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+      - name: Run Check
+        run: |
+          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "No index"
+          bundle exec reapack-index --check
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install SysDeps
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet pandoc
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+      - name: Build and Sync
+        run: |
+          set -e
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          
+          SCRIPT_PATH=$(find . -name "Quad_Cortex_MIDI_control.lua" -print -quit)
+          RAW_VERSION=$(grep "@version" "$SCRIPT_PATH" | head -n 1 | awk '{print $3}')
+          REV_COUNT=$(git rev-list --count HEAD)
+
+          curl -s "https://raw.githubusercontent.com/${{ github.repository }}/main/index.xml" -o index.xml || echo "New index"
+          if [ -f index.xml ]; then
+            xmlstarlet ed -L -d "//version[contains(@name, '-dev')]" index.xml
+          fi
+
+          if [[ $RAW_VERSION == *"-dev"* ]]; then
+            DEPLOY_VER="${RAW_VERSION}.${REV_COUNT}"
+            sed -i "s/@version $RAW_VERSION/@version $DEPLOY_VER/g" "$SCRIPT_PATH"
+          else
+            DEPLOY_VER="$RAW_VERSION"
+          fi
+
+          git add "$SCRIPT_PATH"
+          git commit -m "Release Code: $DEPLOY_VER [rev $REV_COUNT]"
+          
+          bundle exec reapack-index
+          
+          git add index.xml
+          git commit -m "Update Index for $DEPLOY_VER [skip ci]"
+          git push origin HEAD:main --force
