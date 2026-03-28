@@ -21,9 +21,9 @@
 --   - Improved error handling for missing MIDI device
 --   - Better handling of default values in setup
 -- @provides
---   [main] . > ../Quad_Cortex_MIDI_control.lua
---   [main] . > ../Quad_Cortex_MIDI_control_setup.lua
---   [nomain] . > ../lib.lua
+--   [main] Quad_Cortex_MIDI_control.lua > ../
+--   [main] Quad_Cortex_MIDI_control_setup.lua > ../
+--   [nomain] lib.lua > ../
 -- @link GitHub Repository https://github.com/6wheels/reaper-quad-cortex-midi-control
 
 local base_path = debug.getinfo(1).source:match("@?(.*[\\/])")
