@@ -1,6 +1,20 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
 -- @version 2.4.1-dev
+-- @about
+--   # Quad Cortex MIDI Control
+--   Automate your Neural DSP Quad Cortex directly from the Reaper timeline using Regions.
+--
+--   ### How it works
+--   This script triggers MIDI commands based on **Region names** using a simple prefix system:
+--   - **Presets**: Use the default `#` prefix followed by the number (e.g., `#5` to load Preset 5).
+--   - **Scenes**: Use the default `!S` prefix followed by the letter or number (e.g., `!SB` or `!S2` to switch Scenes).
+--
+--   The script monitors the playhead in real-time. As soon as a named region is reached, the corresponding MIDI command is sent to your Quad Cortex.
+--
+--   ### Documentation & Support
+--   For more information and support, visit the official repository:
+--   https://github.com/6wheels/reaper-quad-cortex-midi-control
 -- @changelog
 --   - Setup Wizard globally improved with steps
 --   - Use of message box instead of console for setup instructions
@@ -11,8 +25,6 @@
 --   [main] . > ../Quad_Cortex_MIDI_control_setup.lua
 --   [nomain] . > ../lib.lua
 -- @link GitHub Repository https://github.com/6wheels/reaper-quad-cortex-midi-control
-
--- Main synchronization engine
 
 local base_path = debug.getinfo(1).source:match("@?(.*[\\/])")
 local lib = dofile(base_path .. "lib.lua")
