@@ -88,7 +88,7 @@ jobs:
 
           # 4. Update the .lua file
           echo "Step 4: Updating version in .lua file..."
-          sed -i "s/@version $RAW_VERSION/@version $DEPLOY_VER/g" "$SCRIPT_PATH"
+          sed -i "0,/^-- @version $RAW_VERSION/{s/^-- @version $RAW_VERSION/-- @version $DEPLOY_VER/}" "$SCRIPT_PATH"
 
           # 5. FIRST COMMIT: The code change (SHA-A)
           echo "Step 5: Creating the Code Commit (SHA-A)..."
