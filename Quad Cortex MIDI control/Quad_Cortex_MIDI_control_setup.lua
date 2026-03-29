@@ -71,7 +71,7 @@ function RunSetupWizard()
                             "The script will keep running in the background.", "QC MIDI Control Setup - Success", 0)
                     else
                         lib.Log("The script is now monitoring your project.", 1)
-                        lib.Log("Activity logs will appear here.", 1)
+                        lib.Log("You may need to restart the script if it was running, for the log level change to take effect.", 1)
                     end
 
                     stage = 3
