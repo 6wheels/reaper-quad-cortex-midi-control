@@ -91,10 +91,15 @@ jobs:
           sed -i "0,/^-- @version $RAW_VERSION/{s/^-- @version $RAW_VERSION/-- @version $DEPLOY_VER/}" "$SCRIPT_PATH"
 
           # 5. FIRST COMMIT: The code change (SHA-A)
-          echo "Step 5: Creating the Code Commit (SHA-A)..."
+          echo "Step 5: Preparing Code Commit..."
           git add "$SCRIPT_PATH"
-          git commit -m "Release Code: $DEPLOY_VER [rev $REV_COUNT]"
-          echo "SHA-A created."
+          # On ne commit que s'il y a un changement réel (utile si Stable)
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Release Code: $DEPLOY_VER [rev $REV_COUNT]"
+            echo "✅ SHA-A created."
+          else
+            echo "[skip] No changes detected in script, skipping SHA-A."
+          fi
 
           # 6. INDEXING
           echo "Step 6: Running reapack-index (linking to SHA-A)..."
@@ -115,7 +120,12 @@ jobs:
           # 8. Second Commit (index)
           echo "Step 8: Committing updated index.xml..."
           git add -f index.xml
-          git commit -m "Update index for $DEPLOY_VER [skip ci]"
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Update index for $DEPLOY_VER [skip ci]"
+            echo "✅ Index commit created."
+          else
+            echo "[skip] No changes in index.xml, skipping commit."
+          fi
 
           # 9. Final Push to Main
           echo "Step 9: Force-pushing sequence to 'main'..."
