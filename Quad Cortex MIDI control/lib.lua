@@ -23,8 +23,8 @@ lib.Config = {}
 for k, v in pairs(lib.Defaults) do lib.Config[k] = v end
 
 function lib.Log(message, level)
-    local current_level = tonumber(lib.Config.LOG_LEVEL) or 1
-    if current_level > 0 and level <= current_level then
+    local current_level = tonumber(lib.Config.LOG_LEVEL) or 0
+    if level <= current_level then
         reaper.ShowConsoleMsg(tostring(message) .. "\n")
     end
 end

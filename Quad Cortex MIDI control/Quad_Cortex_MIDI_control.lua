@@ -30,6 +30,7 @@ local base_path = debug.getinfo(1).source:match("@?(.*[\\/])")
 local lib = dofile(base_path .. "lib.lua")
 
 -- --- INITIALIZATION ---
+lib.LoadSettings()
 reaper.ClearConsole()
 
 lib.Log("--- Quad Cortex MIDI Control ---", 1)
