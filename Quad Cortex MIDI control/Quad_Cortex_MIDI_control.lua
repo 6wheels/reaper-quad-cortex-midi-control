@@ -1,6 +1,6 @@
 -- @description Quad Cortex MIDI control
 -- @author Bertrand C
--- @version 2.4.1-dev
+-- @version 2.4.1
 -- @about
 --   # Quad Cortex MIDI Control
 --   Automate your Neural DSP Quad Cortex directly from the Reaper timeline using Regions.
